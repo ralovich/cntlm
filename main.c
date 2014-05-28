@@ -1334,29 +1334,30 @@ int main(int argc, char **argv) {
 	 * and can thus create a new session for itself and detach
 	 * from the controlling terminal.
 	 */
-	if (asdaemon) {
-		if (debug)
-			printf("Forking into background as requested.\n");
+    // _MSC_VER FIXME
+//	if (asdaemon) {
+//		if (debug)
+//			printf("Forking into background as requested.\n");
 
-		i = fork();
-		if (i == -1) {
-			perror("Fork into background failed");		/* fork failed */
-			myexit(1);
-		} else if (i)
-			myexit(0);					/* parent */
+//		i = fork();
+//		if (i == -1) {
+//			perror("Fork into background failed");		/* fork failed */
+//			myexit(1);
+//		} else if (i)
+//			myexit(0);					/* parent */
 
-		setsid();
-		umask(0);
-		w = chdir("/");
-		i = open("/dev/null", O_RDWR);
-		if (i >= 0) {
-			dup2(i, 0);
-			dup2(i, 1);
-			dup2(i, 2);
-			if (i > 2)
-				close(i);
-		}
-	}
+//		setsid();
+//		umask(0);
+//		w = chdir("/");
+//		i = open("/dev/null", O_RDWR);
+//		if (i >= 0) {
+//			dup2(i, 0);
+//			dup2(i, 1);
+//			dup2(i, 2);
+//			if (i > 2)
+//				close(i);
+//		}
+//	}
 
 	/*
 	 * Reinit syslog logging to include our PID, after forking
@@ -1438,7 +1439,9 @@ int main(int argc, char **argv) {
 	/*
 	 * Initialize the random number generator
 	 */
+#ifndef _MSC_VER
 	srandom(time(NULL));
+#endif
 
 	/*
 	 * This loop iterates over every connection request on any of

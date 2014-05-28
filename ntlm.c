@@ -64,6 +64,13 @@ static int ntlm_calc_resp(char **dst, char *keys, char *challenge) {
 	return 24;
 }
 
+long int random(void)
+{
+    unsigned int randomValue;
+    rand_s(&randomValue);
+    return randomValue;
+}
+
 static void ntlm2_calc_resp(char **nthash, int *ntlen, char **lmhash, int *lmlen, 
 		char *passnt2, char *challenge, int tbofs, int tblen) {
 	char *tmp, *blob, *nonce, *buf;

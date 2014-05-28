@@ -34,6 +34,7 @@
 #include "globals.h"
 #include "forward.h"
 #include "scanner.h"
+#include "snprintf.h"
 
 /*
  * This code is a piece of shit, but it works. Cannot rewrite it now, because
