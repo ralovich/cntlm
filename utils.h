@@ -68,9 +68,10 @@ struct hlist_s {
 	struct hlist_s *next;
 };
 
+typedef unsigned long pkey_t;
 typedef struct plist_s *plist_t;
 struct plist_s {
-	unsigned long key;
+    pkey_t key;
 	void *aux;
 	struct plist_s *next;
 };
@@ -115,7 +116,6 @@ struct thread_arg_s {
 extern void myexit(int rc);
 extern void croak(const char *msg, int console);
 
-typedef unsigned long pkey_t;
 
 extern plist_t plist_add(plist_t list, pkey_t key, void *aux);
 extern plist_t plist_del(plist_t list, pkey_t key);
