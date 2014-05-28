@@ -115,11 +115,13 @@ struct thread_arg_s {
 extern void myexit(int rc);
 extern void croak(const char *msg, int console);
 
-extern plist_t plist_add(plist_t list, unsigned long key, void *aux);
-extern plist_t plist_del(plist_t list, unsigned long key);
-extern int plist_in(plist_t list, unsigned long key);
+typedef unsigned long pkey_t;
+
+extern plist_t plist_add(plist_t list, pkey_t key, void *aux);
+extern plist_t plist_del(plist_t list, pkey_t key);
+extern int plist_in(plist_t list, pkey_t key);
 extern void plist_dump(plist_t list);
-extern char *plist_get(plist_t list, int key);
+extern char *plist_get(plist_t list, pkey_t key);
 extern int plist_pop(plist_t *list, void **aux);
 extern int plist_count(plist_t list);
 extern plist_t plist_free(plist_t list);
