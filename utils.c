@@ -20,11 +20,13 @@
  */
 
 #include <sys/types.h>
-#include <sys/socket.h>
+//#include <sys/socket.h>
+#include <winsock2.h>
 #include <string.h>
 #include <strings.h>
 #include <stdlib.h>
-#include <unistd.h>
+//#include <unistd.h>
+#include <io.h>
 #include <stdio.h>
 #include <errno.h>
 #include <ctype.h>

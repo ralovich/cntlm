@@ -22,7 +22,12 @@
 #ifndef _ACL_H
 #define _ACL_H
 
-#include <netinet/in.h>
+#ifndef _MSC_VER
+# include <netinet/in.h>
+#else
+# include <WinSock2.h>
+#endif
+
 
 #include "utils.h"
 

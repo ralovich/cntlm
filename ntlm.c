@@ -72,7 +72,7 @@ static void ntlm2_calc_resp(char **nthash, int *ntlen, char **lmhash, int *lmlen
 
 	nonce = new(8 + 1);
 	VAL(nonce, uint64_t, 0) = ((uint64_t)random() << 32) | random();
-	tw = ((uint64_t)time(NULL) + 11644473600LLU) * 10000000LLU;
+    tw = ((uint64_t)time(NULL) + 11644473600ULL) * 10000000ULL;
 
 	if (debug) {
 		tmp = printmem(nonce, 8, 7);

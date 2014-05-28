@@ -21,17 +21,25 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#ifndef _MSC_VER
+# include <unistd.h>
+#else
+# include <io.h>
+#endif
 #include <string.h>
 #include <syslog.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#ifndef _MSC_VER
+# include <netinet/in.h>
+# include <arpa/inet.h>
+#else
+# include <WinSock2.h>
+#endif
 #include <strings.h>
 #include <errno.h>
-#include <netdb.h>
-#include <sys/socket.h>
+//#include <netdb.h>
+//#include <sys/socket.h>
 
-extern int h_errno;
+//extern int h_errno;
 
 #include "utils.h"
 #include "globals.h"

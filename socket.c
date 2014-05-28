@@ -20,17 +20,20 @@
  */
 
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/time.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <sys/socket.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+//#include <sys/time.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+//#include <unistd.h>
+#include <io.h>
 #include <fcntl.h>
-#include <netdb.h>
+//#include <netdb.h>
 #include <syslog.h>
 
 #include "utils.h"
@@ -56,7 +59,7 @@ int so_resolv(struct in_addr *host, const char *name) {
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
-	int rc = getaddrinfo(name, NULL, &hints, &res);
+    int rc = getaddrinfo(name, NULL, &hints, &res);
 	if (rc != 0) {
 		if (debug)
 			printf("so_resolv: %s failed: %s (%d)\n", name, gai_strerror(rc), rc);

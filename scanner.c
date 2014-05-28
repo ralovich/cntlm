@@ -21,7 +21,8 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+//#include <unistd.h>
+#include <io.h>
 #include <ctype.h>
 #include <string.h>
 #include <strings.h>

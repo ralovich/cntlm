@@ -20,14 +20,17 @@
  */
 
 #include <sys/types.h>
+#ifndef _MSC_VER
 #include <sys/select.h>
 #include <sys/time.h>
+#endif
 #include <ctype.h>
 #include <string.h>
 #include <strings.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+//#include <unistd.h>
+#include <io.h>
 #include <errno.h>
 
 #include "utils.h"

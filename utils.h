@@ -26,7 +26,11 @@
 # include <sys/param.h>
 #endif
 #include <pthread.h>
-#include <netinet/in.h>
+#ifndef _MSC_VER
+# include <netinet/in.h>
+#else
+# include <WinSock2.h>
+#endif
 
 #include "config/config.h"
 
@@ -158,8 +162,10 @@ extern long int random(void);
 #if config_gethostname == 1
 extern int gethostname(char *name, size_t len);
 #endif
+#ifndef _MSC_VER
 #ifndef strdup
 extern char *strdup(const char *src);
+#endif
 #endif
 
 #endif /* _UTILS_H */

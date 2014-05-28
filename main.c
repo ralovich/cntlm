@@ -20,26 +20,29 @@
  */
 
 #include <sys/types.h>
-#include <sys/time.h>
-#include <sys/select.h>
+//#include <sys/time.h>
+//#include <sys/select.h>
 #include <sys/stat.h>
-#include <sys/socket.h>
+//#include <sys/socket.h>
+#include <winsock2.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <errno.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
 #include <signal.h>
-#include <unistd.h>
+//#include <unistd.h>
+#include <io.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-#include <netdb.h>
+#include "snprintf.h"
+//#include <netdb.h>
 #include <ctype.h>
-#include <pwd.h>
+//#include <pwd.h>
 #include <fcntl.h>
 #include <syslog.h>
-#include <termios.h>
+//#include <termios.h>
 #include <fnmatch.h>
 
 /*
@@ -59,6 +62,8 @@
 #include "pages.h"
 #include "forward.h"				/* code serving via parent proxy */
 #include "direct.h"				/* code serving directly without proxy */
+
+#include "getopt.h"
 
 #define STACK_SIZE	sizeof(void *)*8*1024
 
@@ -1532,7 +1537,7 @@ int main(int argc, char **argv) {
 
 				pthread_attr_init(&pattr);
 				pthread_attr_setstacksize(&pattr, STACK_SIZE);
-#ifndef __CYGWIN__
+#if !defined(__CYGWIN__) and !defined(_MSC_VER)
 				pthread_attr_setguardsize(&pattr, 256);
 #endif
 

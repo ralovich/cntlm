@@ -22,7 +22,8 @@
 #ifndef _SOCKET_H
 #define _SOCKET_H
 
-#include <netinet/in.h>
+//#include <netinet/in.h>
+#include <WinSock2.h>
 #include <stdint.h>
 
 #include "config/config.h"

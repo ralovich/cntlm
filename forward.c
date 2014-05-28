@@ -21,11 +21,13 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+//#include <unistd.h>
+#include <io.h>
 #include <string.h>
 #include <syslog.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <netinet/in.h>
+//#include <arpa/inet.h>
+#include <WinSock2.h>
 #include <strings.h>
 
 #include "utils.h"
