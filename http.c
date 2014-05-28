@@ -608,7 +608,7 @@ int http_parse_basic(hlist_t headers, const char *header, struct auth_s *tcreds)
 	tmp = hlist_get(headers, header);
 	buf = new(strlen(tmp) + 1);
 	i = 5;
-	while (i < strlen(tmp) && tmp[++i] == ' ');
+    while (i < (int)strlen(tmp) && tmp[++i] == ' ');
 	from_base64(buf, tmp+i);
 	pos = strchr(buf, ':');
 

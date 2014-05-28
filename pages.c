@@ -26,6 +26,7 @@
 #include "string.h"
 #include "stdio.h"
 #include <strings.h>
+#include <snprintf.h>
 
 char *gen_407_page(const char *http) {
 	char *tmp;
