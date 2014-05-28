@@ -837,7 +837,7 @@ int main(int argc, char **argv) {
 					dup2(tracefile, 1);
 					dup2(tracefile, 2);
 					printf("Cntlm debug trace, version " VERSION);
-#ifdef __CYGWIN__
+#if defined(__CYGWIN__) || defined(_MSC_VER)
 					printf(" windows/cygwin port");
 #endif
 					printf(".\nCommand line: ");
@@ -1537,7 +1537,7 @@ int main(int argc, char **argv) {
 
 				pthread_attr_init(&pattr);
 				pthread_attr_setstacksize(&pattr, STACK_SIZE);
-#if !defined(__CYGWIN__) and !defined(_MSC_VER)
+#if !defined(__CYGWIN__) && !defined(_MSC_VER)
 				pthread_attr_setguardsize(&pattr, 256);
 #endif
 

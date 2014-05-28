@@ -55,20 +55,21 @@ int so_resolv(struct in_addr *host, const char *name) {
 	return 1;
 */
 	struct addrinfo hints, *res, *p;
+    int rc = -1;
+    int addr_set = 0;
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
-    int rc = getaddrinfo(name, NULL, &hints, &res);
+    rc = getaddrinfo(name, NULL, &hints, &res);
 	if (rc != 0) {
 		if (debug)
 			printf("so_resolv: %s failed: %s (%d)\n", name, gai_strerror(rc), rc);
 		return 0;
-	}
+    }
 
 	if (debug)
 		printf("Resolve %s:\n", name);
-	int addr_set = 0;
 	for (p = res; p != NULL; p = p->ai_next) {
 		struct sockaddr_in *ad = (struct sockaddr_in*)(p->ai_addr);
 		if (ad == NULL) {
@@ -100,6 +101,7 @@ int so_connect(struct in_addr host, int port) {
 	struct sockaddr_in saddr;
 	// struct timeval tv;
 	// fd_set fds;
+    u_long iMode = 0;
 
 	if ((fd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		if (debug)
@@ -112,12 +114,15 @@ int so_connect(struct in_addr host, int port) {
 	saddr.sin_port = htons(port);
 	saddr.sin_addr = host;
 
+    /*
 	if ((flags = fcntl(fd, F_GETFL, 0)) < 0) {
 		if (debug)
 			printf("so_connect: get flags: %s\n", strerror(errno));
 		close(fd);
 		return -1;
 	}
+    */
+    flags = 0;
 
 	/* NON-BLOCKING connect with timeout
 	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) {
@@ -150,7 +155,10 @@ int so_connect(struct in_addr host, int port) {
 		return -1;
 	}
 
-	if (fcntl(fd, F_SETFL, flags & ~O_NONBLOCK) < 0) {
+    /* see http://msdn.microsoft.com/en-us/library/windows/desktop/ms738573(v=vs.85).aspx */
+    /* ioctlsocket(m_socket, FIONBIO, &iMode); */
+    /*if (fcntl(fd, F_SETFL, flags & ~O_NONBLOCK) < 0) {*/
+    if (ioctlsocket(fd, FIONBIO, &iMode) != NO_ERROR) {
 		if (debug)
 			printf("so_connect: set blocking: %s\n", strerror(errno));
 		close(fd);
@@ -168,6 +176,10 @@ int so_listen(int port, struct in_addr source) {
 	struct sockaddr_in saddr;
 	int fd;
 	socklen_t clen;
+#ifdef _MSC_VER
+    BOOL bOptVal = FALSE;
+    int bOptLen = sizeof (BOOL);
+#endif
 
 	fd = socket(PF_INET, SOCK_STREAM, 0);
 	if (fd < 0) {
@@ -178,7 +190,11 @@ int so_listen(int port, struct in_addr source) {
 	}
 
 	clen = 1;
-	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &clen, sizeof(clen));
+#ifndef _MSC_VER
+    setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &clen, sizeof(clen));
+#else
+    setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char*)&bOptVal, bOptLen);
+#endif
 	memset((void *)&saddr, 0, sizeof(saddr));
 	saddr.sin_family = AF_INET;
 	saddr.sin_port = htons(port);
@@ -207,12 +223,14 @@ int so_recvtest(int fd) {
 	char buf;
 	int i;
 #ifndef MSG_DONTWAIT
-	unsigned int flags;
+    //unsigned int flags;
 
-	flags = fcntl(fd, F_GETFL);
-	fcntl(fd, F_SETFL, flags | O_NONBLOCK);
+    /*flags = fcntl(fd, F_GETFL);-*
+    /*fcntl(fd, F_SETFL, flags | O_NONBLOCK);*/
+    u_long iMode=1;
+    ioctlsocket(fd, FIONBIO, &iMode);
 	i = recv(fd, &buf, 1, MSG_PEEK);
-	fcntl(fd, F_SETFL, flags);
+    /*fcntl(fd, F_SETFL, flags);*/
 #else
 	i = recv(fd, &buf, 1, MSG_DONTWAIT | MSG_PEEK);
 #endif
