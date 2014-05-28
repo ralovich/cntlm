@@ -68,13 +68,22 @@ struct hlist_s {
 	struct hlist_s *next;
 };
 
-typedef unsigned long pkey_t;
+/*typedef unsigned long pkey_t;*/
+typedef unsigned __int64 pkey_t;
 typedef struct plist_s *plist_t;
 struct plist_s {
     pkey_t key;
 	void *aux;
 	struct plist_s *next;
 };
+
+typedef struct ptlist_s *ptlist_t;
+struct ptlist_s {
+    pthread_t key;
+    void *aux;
+    struct ptlist_s *next;
+};
+
 
 typedef enum {
 	HLIST_NOALLOC = 0,
@@ -125,6 +134,8 @@ extern char *plist_get(plist_t list, pkey_t key);
 extern int plist_pop(plist_t *list, void **aux);
 extern int plist_count(plist_t list);
 extern plist_t plist_free(plist_t list);
+
+extern ptlist_t ptlist_add(ptlist_t list, pthread_t key, void *aux);
 
 extern hlist_t hlist_add(hlist_t list, char *key, char *value, hlist_add_t allockey, hlist_add_t allocvalue);
 extern hlist_t hlist_dup(hlist_t list);

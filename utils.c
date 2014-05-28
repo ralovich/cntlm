@@ -89,6 +89,26 @@ plist_t plist_add(plist_t list, pkey_t key, void *aux) {
 	return list;
 }
 
+ptlist_t
+ptlist_add(ptlist_t list, pthread_t key, void *aux) {
+    ptlist_t tmp, t = list;
+
+    tmp = malloc(sizeof(struct ptlist_s));
+    tmp->key = key;
+    tmp->aux = aux;
+    tmp->next = NULL;
+
+    if (list == NULL)
+        return tmp;
+
+    while (t->next)
+        t = t->next;
+
+    t->next = tmp;
+
+    return list;
+}
+
 /*
  * Delete an item from the list, possibly returning NULL when
  * the list is empty or nothing was found.

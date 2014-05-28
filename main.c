@@ -86,7 +86,7 @@ long scanner_plugin_maxsize = 0;
  * List of finished threads. Each forward_request() thread adds itself to it when
  * finished. Main regularly joins and removes all tid's in there.
  */
-plist_t threads_list = NULL;
+ptlist_t threads_list = NULL;
 pthread_mutex_t threads_mtx = PTHREAD_MUTEX_INITIALIZER;
 
 /*
@@ -367,7 +367,7 @@ void *proxy_thread(void *thread_data) {
 	 */
 	if (!serialize) {
 		pthread_mutex_lock(&threads_mtx);
-		threads_list = plist_add(threads_list, (unsigned long)pthread_self(), NULL);
+        threads_list = ptlist_add(threads_list, pthread_self(), NULL);
 		pthread_mutex_unlock(&threads_mtx);
 	}
 
@@ -402,7 +402,7 @@ void *tunnel_thread(void *thread_data) {
 	 * Add ourself to the "threads to join" list.
 	 */
 	pthread_mutex_lock(&threads_mtx);
-	threads_list = plist_add(threads_list, (unsigned long)pthread_self(), NULL);
+    threads_list = ptlist_add(threads_list, pthread_self(), NULL);
 	pthread_mutex_unlock(&threads_mtx);
 
 	return NULL;
@@ -671,7 +671,7 @@ int main(int argc, char **argv) {
 	char *cpassword, *cpassntlm2, *cpassnt, *cpasslm;
 	char *cuser, *cdomain, *cworkstation, *cuid, *cpidfile, *cauth;
 	struct passwd *pw;
-	struct termios termold, termnew;
+    /*struct termios termold, termnew;*/ /*FIXME: _MSC_VER*/
 	pthread_attr_t pattr;
 	pthread_t pthr;
 	hlist_t list;
@@ -1201,7 +1201,9 @@ int main(int argc, char **argv) {
 	/*
 	 * Last chance to get password from the user
 	 */
-	if (interactivehash || magic_detect || (interactivepwd && !ntlmbasic)) {
+    /*FIXME: _MSC_VER*/
+    /*
+    if (interactivehash || magic_detect || (interactivepwd && !ntlmbasic)) {
 		printf("Password: ");
 		tcgetattr(0, &termold);
 		termnew = termold;
@@ -1217,6 +1219,7 @@ int main(int argc, char **argv) {
 		}
 		printf("\n");
 	}
+    */
 
 	/*
 	 * Convert optional PassNT, PassLM and PassNTLMv2 strings to hashes
@@ -1370,6 +1373,8 @@ int main(int argc, char **argv) {
 	/*
 	 * Check and change UID.
 	 */
+    /*FIXME: _MSC_VER*/
+    /*
 	if (strlen(cuid)) {
 		if (getuid() && geteuid()) {
 			syslog(LOG_WARNING, "No root privileges; keeping identity %d:%d\n", getuid(), getgid());
@@ -1399,6 +1404,7 @@ int main(int argc, char **argv) {
 			}
 		}
 	}
+    */
 
 	/*
 	 * PID file requested? Try to create one (it must not exist).
@@ -1424,10 +1430,10 @@ int main(int argc, char **argv) {
 	 * When the handler is called (termination request), it signals
 	 * this news by adding 1 to the global quit variable.
 	 */
-	signal(SIGPIPE, SIG_IGN);
+    /*signal(SIGPIPE, SIG_IGN);*/ /*FIXME: _MSC_VER*/
 	signal(SIGINT, &sighandler);
 	signal(SIGTERM, &sighandler);
-	signal(SIGHUP, &sighandler);
+    /*signal(SIGHUP, &sighandler);*/ /*FIXME: _MSC_VER*/
 
 	/*
 	 * Initialize the random number generator
@@ -1454,7 +1460,8 @@ int main(int argc, char **argv) {
 		struct timeval tv;
 		socklen_t clen;
 		fd_set set;
-		plist_t t;
+        plist_t t;
+        ptlist_t th;
 		int tid = 0;
 
 		FD_ZERO(&set);
@@ -1574,20 +1581,20 @@ int main(int argc, char **argv) {
 
 		if (threads_list) {
 			pthread_mutex_lock(&threads_mtx);
-			t = threads_list;
-			while (t) {
-				plist_t tmp = t->next;
-				tid = pthread_join((pthread_t)t->key, (void *)&i);
+            th = threads_list;
+            while (th) {
+                ptlist_t tmp = th->next;
+                tid = pthread_join(th->key, (void *)&i);
 
 				if (!tid) {
 					tj++;
 					if (debug)
-						printf("Joining thread %lu; rc: %d\n", t->key, i);
+                        printf("Joining thread %lu; rc: %d\n", th->key, i);
 				} else
 					syslog(LOG_ERR, "Serious error during pthread_join: %d\n", tid);
 
-				free(t);
-				t = tmp;
+                free(th);
+                th = tmp;
 			}
 			threads_list = NULL;
 			pthread_mutex_unlock(&threads_mtx);

@@ -54,3 +54,7 @@ ADD_EXECUTABLE(cntlm
   winfix/wsyslog.c
   )
 
+TARGET_LINK_LIBRARIES(cntlm
+  Ws2_32.lib
+  ${PROJECT_SOURCE_DIR}/pthread-2-9-1/lib/x86/pthreadVC2.lib
+)

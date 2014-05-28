@@ -39,7 +39,7 @@ extern int serialize;
 extern int scanner_plugin;
 extern long scanner_plugin_maxsize;
 
-extern plist_t threads_list;
+extern ptlist_t threads_list;
 extern pthread_mutex_t threads_mtx;
 
 extern plist_t connection_list;
